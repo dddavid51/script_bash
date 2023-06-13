@@ -14,12 +14,12 @@ fi
            read -e -p "Please enter your new port number...? " new_port
  
            file_sshd_config="/etc/ssh/sshd_config"
-           tmp_sshd_config=$(cat $file_sshd_config | grep -w Port | cut -d " " -f2) > /dev/null
+           check_sshd_config=$(cat $file_sshd_config | grep -w Port | cut -d " " -f2) > /dev/null
            installdeps="dnf install -y policycoreutils"
            semanage1="semanage port -a -t ssh_port_t -p tcp $new_port"
            semanage2="semanage port -m -t ssh_port_t -p tcp $new_port"
            firewall_add="firewall-cmd --add-port=$new_port/tcp --permanent"
-           firewall_remove="firewall-cmd --remove-port=$tmp_sshd_config/tcp --permanent"
+           firewall_remove="firewall-cmd --remove-port=$check_sshd_config/tcp --permanent"
            firewall_remove_service="firewall-cmd --remove-service=ssh --permanent"
            firewall_reload="firewall-cmd --reload"
  
@@ -39,7 +39,7 @@ function modify_port()
            else
            echo "ssh is not on port 22..."
            cp -f $file_sshd_config $file_sshd_config.bak && cp -f $file_sshd_config /tmp/sshd_config.bak
-           sed -i "s/Port "$tmp_sshd_config"/Port "$new_port"/" "$file_sshd_config"
+           sed -i "s/Port "$check_sshd_config"/Port "$new_port"/" "$file_sshd_config"
               $installdeps > /dev/null
               $semanage1
               $semanage2
