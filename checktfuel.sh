@@ -29,7 +29,7 @@
 #    monthcheck function to run ( checktfuel.sh force ) command to be used if the monthcheck function has not been activated !!!.
 #    if you want to see the execution of the script add bash -x checktfuel.sh
 
-user="ubuntu" # Replace user with your username.
+user="username ???" # Replace user with your username.
 
 # double loop execution to update the monthcheck function...
 total_runs=2
