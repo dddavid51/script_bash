@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# checktfuel.sh # Theta node tfuel
+# checktfuel.sh
 #
 # author: david dzieciol
 # contact: david.dzieciol@gmail.com
-# version 3.7.2
+# version 3.7.3
 #
 # copyright (c) 2023 david dzieciol
 #
@@ -24,6 +24,9 @@
 #    The license is available on this server here:
 #    https://www.gnu.org/licenses/gpl-3.0.en.html
 #
+#    There won't be a new version unless there's a change in the linux system or in the edgelauncher image, or if I find a better average for calculating tfuel.
+#
+#    Removal of the lock_file check, no longer useful since the addition of the 3 tfuel check.
 #    Update calculation 0.0995 to 0.101 and update function check_edgelauncher.
 #    Updated following changes to some linux versions.Operational version for testing on ubuntu,opensuse,archlinux,rockylinux.
 #    monthcheck function to run ( checktfuel.sh force ) command to be used if the monthcheck function has not been activated !!!.
@@ -145,18 +148,13 @@ check_edgelauncher
 function monthcheck()
 {
              result=$(echo "$retour * 0.101" | bc | sed 's/^\./0\./; s/^-\./-0\./' | cut -d '.' -f1) # sed to force the addition of 0 if the result is less than 1.
-             lock_file="/tmp/mytime.lock"
              current_date=$(date +"%d")
 
              if  [ "$result" -ge 3 ]; then
              echo -e "\e[01;32mThe result is greater than 3 TFUEL the monthcheck function will be executed...\e[0m" #> /dev/null
 
-             if [ ! -f "$lock_file" ]; then
-             echo "The file does not exist. Execution of orders." #> /dev/null
-
              if [ "$current_date" -eq 1 ]; then
              echo "order executed on the 1st of each month."
-             touch "$lock_file"
 
              for del in $(cat $psd); do
              cd "$del"
@@ -167,9 +165,6 @@ function monthcheck()
              done
              docker restart edgelauncher
        fi
-             else
-             echo "mytime.lock file exists."
-    fi
              else
              echo -e "\e[01;33mThe result is less than 3 TFUEL the monthcheck function will not be executed...\e[0m" #> /dev/null
 fi
@@ -200,24 +195,17 @@ function monthcheck_force()
 fi
 fi
 
-if [[ "$current_date" < 1 ]]; then
-  echo "order filled on a date greater than the 1st of each month." > /dev/null
-            rm -f "$lock_file"
-else
-  echo "no orders to execute for this day."
-fi
-
 # copy log files to backup folder.
-    for line in $(cat $psd); do
-    cp -f "$line"/*.log "$backup_directory"
-    cp -f "$line"/*.log "$copy"
-    done
+ for line in $(cat $psd); do
+ cp -f "$line"/*.log "$backup_directory"
+ cp -f "$line"/*.log "$copy"
+ done
 
 # copy verification
 if [ $? -eq 0 ]; then
-  echo "backup of docker log files completed successfully." > /dev/null
-  else
-  echo "an error occurred while saving docker log files."
+echo "backup of docker log files completed successfully." > /dev/null
+else
+echo "an error occurred while saving docker log files."
 fi
 
 cat $backup_directory/*.log | grep -w 'progress:  1.00' | wc -l > $progress
@@ -249,7 +237,7 @@ fi
 fi
 
         echo "the task '$command1' has been added to the crontab. It will run every 1st day of every month at 12pm." #> /dev/null
-        echo "the task '$command2' has been added to the crontab. It will run every day at 8pm or 6pm utc" #> /dev/null # history 
+        echo "the task '$command2' has been added to the crontab. It will run every day at 8pm or 6pm utc" #> /dev/null # history
 }
-add_crontab # if you don't want to use this function comment it out added a #add_crontab
+#add_crontab # if you don't want to use this function comment it out added a #add_crontab
 exit 0
