@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # change_port_ssh.sh : Change ssh port for redhat enterprise server base.
-# Version: 1.1
+# Version: 1.2
 # Author: david.dzieciol
 # Email: david.dzieciol51100@gmail.com
 # Note: Test on rockylinux 9, almalinux 9, centos stream 9
