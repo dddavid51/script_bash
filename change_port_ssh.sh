@@ -14,7 +14,7 @@
            exit 1
            fi
 
-           read -e -p "Please enter your new ssh port number...? " new_port
+           read -e "Please enter your new ssh port number...? " new_port
 
            file_sshd_config="/etc/ssh/sshd_config"
            check_sshd_config=$(cat $file_sshd_config | grep -w Port | cut -d " " -f2) > /dev/null
