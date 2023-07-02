@@ -10,11 +10,16 @@
 
 # Check if executed as root user
            if [[ $EUID -ne 0 ]]; then
-           echo -e "This script has to be run as \033[1mroot\033[0m user."
+           echo -e -p "This script has to be run as \033[1mroot\033[0m user."
            exit 1
            fi
 
-           read -e "Please enter your new ssh port number...? " new_port
+           read -e -p "Please enter your new ssh port number...? " new_port
+
+            if [ -z $new_port ] ;then
+            echo "You forgot to put a port number"
+            exit 1
+            fi
 
            file_sshd_config="/etc/ssh/sshd_config"
            check_sshd_config=$(cat $file_sshd_config | grep -w Port | cut -d " " -f2) > /dev/null
