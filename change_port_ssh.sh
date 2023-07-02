@@ -6,6 +6,7 @@
 # Email: david.dzieciol51100@gmail.com
 # Note: Test on rockylinux 9, almalinux 9, centos stream 9
 # Note: Add check whether the port to be replaced is already present in sshd_config
+# Note: Add new_port variable verification
 
 
 # Check if executed as root user
